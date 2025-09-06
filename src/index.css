@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+input:focus {
+  outline: none;
+  border: none; /* optional if you don’t want any border */
+}
