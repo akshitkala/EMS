@@ -1,17 +1,20 @@
 import React, { useState } from "react";
 import { FaUnlockAlt } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
-const Login = () => {
+const Login = ({handlelogin}) => {
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
   const handlesubmit = (e) => {
     e.preventDefault(); 
-    alert("subitted")
-    console.log(`emai:${email}`)
+    // alert("subitted")
+    console.log(`email:${email}`)
     console.log(`password:${password}`)
+    handlelogin(email,password)
     setemail("")
     setpassword("")
   };
+
+  // console.log(handlelogin)
   return (
     <div className="flex items-center justify-center">
       <div className="border-2 border-green-500 bg-white text-black w-[100%] h-screen px-10 flex flex-col gap-10 py-15">
