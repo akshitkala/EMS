@@ -6,49 +6,64 @@ import AdminDashboard from "./components/dashboard/AdminDashboard";
 import { getLocalStorage, setLocalStorage } from "./Utils/localStorage";
 import { AuthContext } from "./context/AuthProvider";
 const App = () => {
-  useEffect(() => {
-    setLocalStorage();
-  }, []);
-
-  
+  // localStorage.clear()
   const [user, setuser] = useState(null);
   const [loggedInUserData, setloggedInUserData] = useState(null);
-  
+  setLocalStorage()
+  useEffect(() => {
+  setLocalStorage()
+    const loggedInUser = localStorage.getItem("loggedInUser");
+    if (loggedInUser) {
+      const UserData = JSON.parse(loggedInUser);
+      console.log(`loggedInUser : ${UserData}`);
+      setuser(UserData.role);
+      setloggedInUserData(UserData.data);
+    }
+  }, []);
+
   const Authdata = useContext(AuthContext);
   useEffect(() => {
-    console.log(user)
-  }, [user])
+    console.log("user : ",user);
+  }, [user]);
   const handleLogin = (email, password) => {
     if (
       Authdata &&
       Authdata.admin.find((e) => email === e.email && password === e.password)
     ) {
-      localStorage.setItem("loggenInUser",JSON.stringify({role:"admin"}))
+      const admin=  Authdata.admin.find((e) => email === e.email && password === e.password)
+      console.log(admin)
+      localStorage.setItem(
+        "loggedInUser",
+        JSON.stringify({ role: "admin", data: admin})
+      );
       setuser("admin");
+      console.log("admin logged in")
     } else if (
       Authdata &&
       Authdata.employees.find(
         (e) => email === e.email && password === e.password
       )
     ) {
-      const employee= Authdata.employees.find(
+      const employee = Authdata.employees.find(
         (e) => email === e.email && password === e.password
-      )
-      localStorage.setItem("loggenInUser",JSON.stringify({role:"employee"}))
-      setloggedInUserData(employee)
-      setuser("user");
+      );
+      localStorage.setItem(
+        "loggedInUser",
+        JSON.stringify({ role: "employee", data: employee })
+      );
+      setloggedInUserData(employee);
+      setuser("employee");
     } else {
       console.log("wrong");
     }
     // console.log(user);
   };
-  
 
   return (
     <>
       {!user ? <Login handlelogin={handleLogin} /> : ""}
-      {user == "admin" && <AdminDashboard />}
-      {user == "user" && <EmployeeDashboard data={loggedInUserData} />}
+      {user == "admin" && <AdminDashboard data={loggedInUserData} />}
+      {user == "employee" && <EmployeeDashboard data={loggedInUserData} />}
     </>
   );
 };

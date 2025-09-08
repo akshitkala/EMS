@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import Header from "../../others/Header";
-const AdminDashboard = () => {
+const AdminDashboard = ({data}) => {
     const [form, setform] = useState({
       title: "",
       description: "",
@@ -18,7 +18,7 @@ const AdminDashboard = () => {
   };
   return (
    <div className="w-full min-h-screen bg-gray-100 text-gray-900 flex flex-col items-center px-4 py-6">
-    <Header/>
+    <Header data={data}/>
   {/* Top Section */}
   <div className="flex items-center gap-3 w-full mb-6">
     <button className="p-2 rounded-full hover:bg-gray-200 transition">
