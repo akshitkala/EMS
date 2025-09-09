@@ -1,24 +1,68 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import Header from "../../others/Header";
-const AdminDashboard = ({data}) => {
+const AdminDashboard = ({data,setuser,user}) => {
     const [form, setform] = useState({
       title: "",
       description: "",
       date: "",
       assign: "",
-      category: "",
+      category: ""
     });
-
-    const [taskarray,settaskaray]= useState([])
+    const [employeesarray,setemployeesarray]=useState([])
+    const [task,settask]= useState()
+    useEffect(() => {
+      const employees=JSON.parse(localStorage.getItem("Employees"))
+      // console.log(employees)
+      setemployeesarray(employees)
+    }, [])
+    
   const handlechange = (e) => {
         e.preventDefault(); 
+        
     setform({ ...form, [e.target.id]: e.target.value });
-    console.log(form)
+    // console.log(form)
   };
+
+  const handleSubmit = (e)=>{
+e.preventDefault()
+    // alert("submitted")
+   const newTask = {
+    taskTitle: form.title,
+    taskDescription: form.description,
+    taskDate: form.date,
+    category: form.category,
+    status: "new",
+  };
+
+  const updatedemployeesarray = employeesarray.map((elem) => {
+    if (elem.firstname === form.assign) {
+      return {
+        ...elem,
+        tasks: [...elem.tasks, newTask], // use newTask directly
+        taskNumber: elem.taskNumber + 1,
+        taskCount: { ...elem.taskCount, new: elem.taskCount.new + 1 },
+      };
+    }
+    return elem;
+  });
+
+  setemployeesarray(updatedemployeesarray);
+  console.log(updatedemployeesarray)
+  localStorage.setItem("Employees", JSON.stringify(updatedemployeesarray));
+  setform({
+      title: "",
+      description: "",
+      date: "",
+      assign: "",
+      category: ""
+    })
+
+   
+  }
   return (
    <div className="w-full min-h-screen bg-gray-100 text-gray-900 flex flex-col items-center px-4 py-6">
-    <Header data={data}/>
+    <Header user={user} setuser={setuser}   data={data}/>
   {/* Top Section */}
   <div className="flex items-center gap-3 w-full mb-6">
     <button className="p-2 rounded-full hover:bg-gray-200 transition">
@@ -28,12 +72,14 @@ const AdminDashboard = ({data}) => {
   </div>
 
   {/* Form */}
-  <form className="w-full flex flex-col gap-5 bg-white shadow-md rounded-xl p-5 border border-gray-200">
+  <form onSubmit={handleSubmit} className="w-full flex flex-col gap-5 bg-white shadow-md rounded-xl p-5 border border-gray-200">
     <div className="flex flex-col gap-2">
       <label htmlFor="title" className="text-sm font-medium text-gray-700">
         Task Title
       </label>
-      <input
+      <input required
+        onChange={(e)=>handlechange(e)}
+        value={form.title}
         id="title"
         type="text"
         placeholder="Make a UI design"
@@ -46,6 +92,8 @@ const AdminDashboard = ({data}) => {
         Description
       </label>
       <textarea
+      onChange={(e)=>handlechange(e)}
+      value={form.description}
         id="description"
         rows="3"
         placeholder="Detailed description of task (Max 500 words)"
@@ -57,7 +105,9 @@ const AdminDashboard = ({data}) => {
       <label htmlFor="date" className="text-sm font-medium text-gray-700">
         Date
       </label>
-      <input
+      <input required
+      onChange={(e)=>handlechange(e)}
+      value={form.date}
         id="date"
         type="date"
         className="px-3 py-3 rounded-lg border border-gray-300 text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm"
@@ -68,7 +118,9 @@ const AdminDashboard = ({data}) => {
       <label htmlFor="assign" className="text-sm font-medium text-gray-700">
         Assign To
       </label>
-      <input
+      <input required
+      onChange={(e)=>handlechange(e)}
+      value={form.assign}
         id="assign"
         type="text"
         placeholder="Enter name or email"
@@ -80,7 +132,9 @@ const AdminDashboard = ({data}) => {
       <label htmlFor="category" className="text-sm font-medium text-gray-700">
         Category
       </label>
-      <input
+      <input required
+        onChange={(e)=>handlechange(e)}
+        value={form.category}
         id="category"
         type="text"
         placeholder="Design, Development, etc."
@@ -100,34 +154,36 @@ const AdminDashboard = ({data}) => {
 {/* Task List */}
 <div className="w-full mt-8 space-y-3">
   <h2 className="text-base font-semibold text-gray-800 mb-2">Task List</h2>
-
-  {/* Example Task - Pending */}
-  <div className="bg-yellow-50 p-4 rounded-lg shadow-md border border-yellow-200">
-    <span className="block font-semibold text-gray-900">Akshit</span>
-    <span className="block text-gray-600 text-sm">Make a Navbar</span>
-    <span className="mt-2 inline-block px-3 py-1 text-sm rounded-full bg-yellow-200 text-yellow-800 font-medium">
-      Pending
-    </span>
-  </div>
-
-  {/* Example Task - In Progress */}
-  <div className="bg-blue-50 p-4 rounded-lg shadow-md border border-blue-200">
-    <span className="block font-semibold text-gray-900">Riya</span>
-    <span className="block text-gray-600 text-sm">Build Login Page</span>
-    <span className="mt-2 inline-block px-3 py-1 text-sm rounded-full bg-blue-200 text-blue-800 font-medium">
-      In Progress
-    </span>
-  </div>
-
-  {/* Example Task - Completed */}
-  <div className="bg-green-50 p-4 rounded-lg shadow-md border border-green-200">
-    <span className="block font-semibold text-gray-900">John</span>
-    <span className="block text-gray-600 text-sm">Create Dashboard</span>
-    <span className="mt-2 inline-block px-3 py-1 text-sm rounded-full bg-green-200 text-green-800 font-medium">
-      Completed
-    </span>
+  <div className="relative overflow-x-auto shadow-md rounded-xl border border-gray-200">
+    <table className="w-full text-sm text-left text-gray-600">
+      <thead className="text-xs uppercase bg-green-100 text-green-700">
+        <tr>
+          <th scope="col" className="px-6 py-3 w-1/5 text-center">Employee Name</th>
+          <th scope="col" className="px-6 py-3 w-1/5 text-center">Active task</th>
+          <th scope="col" className="px-6 py-3 w-1/5 text-center">Completed task</th>
+          <th scope="col" className="px-6 py-3 w-1/5 text-center">New task</th>
+          <th scope="col" className="px-6 py-3 w-1/5 text-center">Failed</th>
+  
+        </tr>
+      </thead>
+      <tbody>
+        {employeesarray.map((item,index)=>{
+          return <tr key={index} className="bg-white border-b hover:bg-green-50">
+          
+          <td className="px-6 py-4 text-center">{item.firstname}</td>
+          <td className="px-6 py-4 text-center">{item.taskCount.active}</td>
+          <td className="px-6 py-4 text-center">{item.taskCount.completed}</td>
+          <td className="px-6 py-4 text-center">{item.taskCount.new}</td>
+          <td className="px-6 py-4 text-center">{item.taskCount.failed}</td>
+          
+        </tr>
+        })}
+        
+      </tbody>
+    </table>
   </div>
 </div>
+
 
 </div>
 

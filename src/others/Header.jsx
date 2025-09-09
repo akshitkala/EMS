@@ -1,12 +1,15 @@
 import React from 'react'
 
-const Header = ({data}) => {
-  console.log(data)
+const Header = ({data,setuser,user}) => {
+  // console.log(data)
 
+  // console.log(user)
   const logoutuser=()=>{
     localStorage.removeItem("loggedInUser")
+    setuser(null)
     console.log("logout")
-      window.location.reload()
+    
+     
     
   }
   return (
