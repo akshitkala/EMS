@@ -3,7 +3,7 @@ import React from 'react'
 const CompleteTask = ({taskitem}) => {
   return (
      <div className="relative w-full p-6 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600
- backdrop-blur-md shadow-xl text-white hover:scale-[1.02] transition-transform duration-300 ease-in-out">
+ backdrop-blur-md shadow-xl text-white hover:scale-[1.01] transition-transform duration-300 ease-in-out">
 
       {/* Floating Glow Effect */}
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-green-300/20 to-emerald-700/20 blur-xl -z-10"></div>

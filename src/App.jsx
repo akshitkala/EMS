@@ -9,6 +9,7 @@ const App = () => {
   // localStorage.clear()
   const [user, setuser] = useState(null);
   const [loggedInUserData, setloggedInUserData] = useState(null);
+  
   setLocalStorage()
   useEffect(() => {
   setLocalStorage()

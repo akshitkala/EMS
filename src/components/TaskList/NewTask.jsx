@@ -3,7 +3,7 @@ import React from 'react'
 const NewTask = ({taskitem}) => {
   return (
      <div className="p-4 w-full bg-gradient-to-r from-yellow-400 to-amber-500
- rounded-xl text-white shadow-lg">
+ rounded-xl text-white shadow-lg hover:scale-[1.01]" >
     
     {/* Top Row: Priority + Date */}
     <div className="flex justify-between items-center mb-2">

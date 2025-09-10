@@ -1,9 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 
-const AcceptTask = ({ taskitem }) => {
+const AcceptTask = ({ taskitem, empname, data ,employeesarray,setemployeesarray}) => {
+  
+
+  const markresulttask = (e) => {
+    // console.log(empname,data)
+    const updatedtaskarrayofemployee = data.tasks.map((item) => {
+      if (item.taskTitle === taskitem.taskTitle) {
+        return { ...item, status: e };
+      } else return item;
+    });
+    console.log(updatedtaskarrayofemployee);
+
+    const updatedemployeesarray = employeesarray.map((elem) => {
+      if (elem.firstname === empname) {
+        return { ...elem, tasks: updatedtaskarrayofemployee };
+        // return { ...elem, tasks: updatedtaskarrayofemployee ,taskCount:{...elem.taskCount,active:elem.taskCount.active-1,e:elem.taskCount+1}};
+      }
+      return elem;
+    });
+    console.log("updatedemployeesarray:",updatedemployeesarray)
+    localStorage.setItem("Employees",JSON.stringify(updatedemployeesarray))
+    setemployeesarray(updatedemployeesarray)
+  };
+
   return (
-    <div className="relative w-full p-6 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-600 backdrop-blur-md shadow-xl text-white hover:scale-[1.02] transition-transform duration-300 ease-in-out">
-      
+    <div className="relative w-full p-6 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-600 backdrop-blur-md shadow-xl text-white hover:scale-[1.01] transition-transform duration-300 ease-in-out">
       {/* Glow Effect */}
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-300/20 to-indigo-800/20 blur-2xl opacity-40 -z-10"></div>
 
@@ -35,10 +57,16 @@ const AcceptTask = ({ taskitem }) => {
 
         {/* Buttons */}
         <div className="flex gap-2">
-          <button className="px-3 py-1 text-xs sm:text-sm rounded-md bg-white/20 text-white font-medium transition-all duration-300 hover:bg-green-500 hover:text-black shadow-md">
+          <button
+            onClick={() => markresulttask("completed")}
+            className="px-3 py-1 text-xs sm:text-sm rounded-md bg-white/20 text-white font-medium transition-all duration-300 hover:bg-green-500 hover:text-black shadow-md"
+          >
             ✅ Complete
           </button>
-          <button className="px-3 py-1 text-xs sm:text-sm rounded-md bg-white/20 text-white font-medium transition-all duration-300 hover:bg-red-500 hover:text-white shadow-md">
+          <button
+            onClick={() => markresulttask("failed")}
+            className="px-3 py-1 text-xs sm:text-sm rounded-md bg-white/20 text-white font-medium transition-all duration-300 hover:bg-red-500 hover:text-white shadow-md"
+          >
             ❌ Fail
           </button>
         </div>
